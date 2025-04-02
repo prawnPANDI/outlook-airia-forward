@@ -20,21 +20,19 @@ Office.onReady(() => {
                 if (result.status === Office.AsyncResultStatus.Succeeded) {
                     const emailContent = result.value;
                     
-                    // Replace this URL with your actual API endpoint
-                    const apiEndpoint = 'https://your-api-endpoint.com/process-email';
+                    // API endpoint and configuration
+                    const apiEndpoint = 'https://prodaus.api.airia.ai/v1/PipelineExecution/bc8e5a90-c46b-41a3-a0f6-72364ebf7a8f';
                     
                     // Send the email content to the API
                     fetch(apiEndpoint, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'X-API-KEY': 'ak-NjQ3NzIxNjk0fDE3NDM1ODE0Nzc2MzV8QWlyaWF8MXw2ODMwOTY0MTMg'
                         },
                         body: JSON.stringify({
-                            subject: item.subject,
-                            body: emailContent,
-                            sender: item.from.emailAddress,
-                            recipients: item.to.map(recipient => recipient.emailAddress),
-                            receivedDateTime: item.dateTimeCreated
+                            userInput: emailContent,
+                            asyncOutput: false
                         })
                     })
                     .then(response => response.json())
