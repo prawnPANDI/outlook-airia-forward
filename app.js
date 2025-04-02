@@ -42,6 +42,32 @@ Office.onReady(() => {
         });
     }
 
+    // Function to display JSON in a formatted way
+    function displayJSON(jsonData) {
+        const pre = document.createElement('pre');
+        pre.style.cssText = `
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 12px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        `;
+        pre.textContent = JSON.stringify(jsonData, null, 2);
+        
+        // Remove any existing pre element
+        const existingPre = document.querySelector('pre');
+        if (existingPre) {
+            existingPre.remove();
+        }
+        
+        // Insert the new pre element before the status element
+        statusElement.parentNode.insertBefore(pre, statusElement);
+    }
+
     // Add click event handler
     sendButton.addEventListener('click', async () => {
         try {
@@ -50,6 +76,9 @@ Office.onReady(() => {
             
             // Format the email content
             const emailContent = await formatEmailContent(item);
+            
+            // Display the formatted JSON
+            displayJSON(emailContent);
             
             // API endpoint and configuration
             const apiEndpoint = 'https://prodaus.api.airia.ai/v1/PipelineExecution/bc8e5a90-c46b-41a3-a0f6-72364ebf7a8f';
