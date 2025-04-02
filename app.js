@@ -121,37 +121,50 @@ Office.onReady(() => {
             
             // API endpoint and configuration
             const apiEndpoint = 'https://prodaus.api.airia.ai/v1/PipelineExecution/bc8e5a90-c46b-41a3-a0f6-72364ebf7a8f';
+            const requestData = {
+                userId: "019540ef-47e9-7b57-a89b-2c521617064f",
+                userInput: JSON.stringify(emailContent, null, 2)
+            };
+            
+            addLogEntry(`API Request Data: ${JSON.stringify(requestData, null, 2)}`);
             
             // Send the email content to the API
             addLogEntry('Step 7: Sending data to API...');
-            fetch(apiEndpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-API-KEY': 'ak-NjQ3NzIxNjk0fDE3NDM1ODE0Nzc2MzV8QWlyaWF8MXw2ODMwOTY0MTMg'
-                },
-                mode: 'cors',
-                credentials: 'omit',
-                body: JSON.stringify({
-                    userId: "019540ef-47e9-7b57-a89b-2c521617064f",
-                    userInput: JSON.stringify(emailContent, null, 2)
-                })
-            })
-            .then(response => {
+            try {
+                const response = await fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-KEY': 'ak-NjQ3NzIxNjk0fDE3NDM1ODE0Nzc2MzV8QWlyaWF8MXw2ODMwOTY0MTMg',
+                        'Accept': 'application/json',
+                        'Origin': window.location.origin
+                    },
+                    mode: 'cors',
+                    credentials: 'omit',
+                    body: JSON.stringify(requestData)
+                });
+
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    const errorText = await response.text();
+                    addLogEntry(`API Error Response: ${errorText}`, 'error');
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
                 }
+
                 addLogEntry('Step 8: API request successful, processing response...');
-                return response.json();
-            })
-            .then(data => {
+                const data = await response.json();
                 addLogEntry('Step 9: Complete! Email content sent successfully!');
+                addLogEntry(`API Response: ${JSON.stringify(data, null, 2)}`);
                 console.log('API Response:', data);
-            })
-            .catch(error => {
-                console.error('Error details:', error);
-                addLogEntry('Error: ' + error.message, 'error');
-            });
+            } catch (fetchError) {
+                console.error('Fetch Error:', fetchError);
+                if (fetchError.name === 'TypeError' && fetchError.message.includes('Failed to fetch')) {
+                    addLogEntry('CORS Error: The API endpoint is not accessible from this domain. This might be due to CORS restrictions.', 'error');
+                    addLogEntry('Technical Details: ' + fetchError.message, 'error');
+                } else {
+                    addLogEntry('API Error: ' + fetchError.message, 'error');
+                }
+                throw fetchError;
+            }
         } catch (error) {
             console.error('Error details:', error);
             addLogEntry('Error: ' + error.message, 'error');
