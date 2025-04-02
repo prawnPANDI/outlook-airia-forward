@@ -83,23 +83,29 @@ Office.onReady(() => {
     // Add click event handler
     sendButton.addEventListener('click', async () => {
         try {
-            showStatus('Loading email content...');
+            showStatus('Step 1: Initializing...');
             
             // Get the current email item
             const item = Office.context.mailbox.item;
+            showStatus('Step 2: Getting email item...');
             
             // Format the email content
+            showStatus('Step 3: Reading email content...');
             const emailContent = await formatEmailContent(item);
+            showStatus('Step 4: Email content read successfully');
             
             // Display the formatted JSON
+            showStatus('Step 5: Preparing data preview...');
             displayJSON(emailContent);
+            showStatus('Step 6: Data preview ready');
             
-            showStatus('Sending to API...');
+            showStatus('Step 7: Preparing API request...');
             
             // API endpoint and configuration
             const apiEndpoint = 'https://prodaus.api.airia.ai/v1/PipelineExecution/bc8e5a90-c46b-41a3-a0f6-72364ebf7a8f';
             
             // Send the email content to the API
+            showStatus('Step 8: Sending data to API...');
             fetch(apiEndpoint, {
                 method: 'POST',
                 headers: {
@@ -118,15 +124,16 @@ Office.onReady(() => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                showStatus('Step 9: API request successful, processing response...');
                 return response.json();
             })
             .then(data => {
-                showStatus('Email content sent successfully!');
+                showStatus('Step 10: Complete! Email content sent successfully!');
                 console.log('API Response:', data);
             })
             .catch(error => {
                 console.error('Error details:', error);
-                showStatus('Error sending email content: ' + error.message);
+                showStatus('Error: ' + error.message);
             });
         } catch (error) {
             console.error('Error details:', error);
@@ -136,5 +143,6 @@ Office.onReady(() => {
 
     function showStatus(message) {
         statusElement.textContent = message;
+        console.log('Status:', message);
     }
 }); 
