@@ -27,8 +27,6 @@
                 <SourceLocation DefaultValue="https://prawnPANDI.github.io/outlook-airia-forward/index.html"/>
                 <DisableEntityHighlighting>false</DisableEntityHighlighting>
             </DesktopSettings>
-            <RequestedHeight>250</RequestedHeight>
-            <RequestedWidth>350</RequestedWidth>
         </Form>
     </FormSettings>
     <Permissions>ReadWriteMailbox</Permissions>
