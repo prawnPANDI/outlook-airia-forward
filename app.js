@@ -9,14 +9,43 @@ Office.onReady(() => {
     const sendButton = document.getElementById('sendButton');
     const statusElement = document.getElementById('status');
 
+    // Create log display
+    const logDisplay = document.createElement('div');
+    logDisplay.style.cssText = `
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 10px 0;
+        max-height: 300px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: 12px;
+        white-space: pre-wrap;
+    `;
+    statusElement.parentNode.insertBefore(logDisplay, statusElement);
+
+    // Function to add log entry
+    function addLogEntry(message, type = 'info') {
+        const timestamp = new Date().toLocaleTimeString();
+        const entry = document.createElement('div');
+        entry.style.cssText = `
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid ${type === 'error' ? '#ff4444' : '#4CAF50'};
+            background-color: ${type === 'error' ? '#fff5f5' : '#f5fff5'};
+        `;
+        entry.textContent = `[${timestamp}] ${message}`;
+        logDisplay.appendChild(entry);
+        logDisplay.scrollTop = logDisplay.scrollHeight;
+        console.log(`[${timestamp}] ${message}`);
+    }
+
     // Function to format email content with all available information
     function formatEmailContent(item) {
         return new Promise((resolve, reject) => {
             // Get the email body
             item.body.getAsync(Office.CoercionType.Text, (result) => {
                 if (result.status === Office.AsyncResultStatus.Succeeded) {
-                    
-
                     const emailInfo = {
                         subject: item.subject || '',
                         sender: item.from ? item.from.emailAddress : '',
@@ -70,29 +99,31 @@ Office.onReady(() => {
     // Add click event handler
     sendButton.addEventListener('click', async () => {
         try {
-            showStatus('Step 1: Initializing...');
+            // Clear previous logs
+            logDisplay.innerHTML = '';
+            addLogEntry('Starting email processing...');
             
             // Get the current email item
             const item = Office.context.mailbox.item;
-            showStatus('Step 2: Getting email item...');
+            addLogEntry('Step 1: Getting email item...');
             
             // Format the email content
-            showStatus('Step 3: Reading email content...');
+            addLogEntry('Step 2: Reading email content...');
             const emailContent = await formatEmailContent(item);
-            showStatus('Step 4: Email content read successfully');
+            addLogEntry('Step 3: Email content read successfully');
             
             // Display the formatted JSON
-            showStatus('Step 5: Preparing data preview...');
+            addLogEntry('Step 4: Preparing data preview...');
             displayJSON(emailContent);
-            showStatus('Step 6: Data preview ready');
+            addLogEntry('Step 5: Data preview ready');
             
-            showStatus('Step 7: Preparing API request...');
+            addLogEntry('Step 6: Preparing API request...');
             
             // API endpoint and configuration
             const apiEndpoint = 'https://prodaus.api.airia.ai/v1/PipelineExecution/bc8e5a90-c46b-41a3-a0f6-72364ebf7a8f';
             
             // Send the email content to the API
-            showStatus('Step 8: Sending data to API...');
+            addLogEntry('Step 7: Sending data to API...');
             fetch(apiEndpoint, {
                 method: 'POST',
                 headers: {
@@ -111,25 +142,25 @@ Office.onReady(() => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                showStatus('Step 9: API request successful, processing response...');
+                addLogEntry('Step 8: API request successful, processing response...');
                 return response.json();
             })
             .then(data => {
-                showStatus('Step 10: Complete! Email content sent successfully!');
+                addLogEntry('Step 9: Complete! Email content sent successfully!');
                 console.log('API Response:', data);
             })
             .catch(error => {
                 console.error('Error details:', error);
-                showStatus('Error: ' + error.message);
+                addLogEntry('Error: ' + error.message, 'error');
             });
         } catch (error) {
             console.error('Error details:', error);
-            showStatus('Error: ' + error.message);
+            addLogEntry('Error: ' + error.message, 'error');
         }
     });
 
     function showStatus(message) {
         statusElement.textContent = message;
-        console.log('Status:', message);
+        addLogEntry(message);
     }
 }); 
