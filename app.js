@@ -11,32 +11,30 @@ Office.onReady(() => {
 
     // Function to format email content with all available information
     function formatEmailContent(item) {
-        const emailInfo = {
-            subject: item.subject || '',
-            sender: item.from ? item.from.emailAddress : '',
-            recipients: {
-                to: item.to ? item.to.map(r => r.emailAddress).join(', ') : '',
-                cc: item.cc ? item.cc.map(r => r.emailAddress).join(', ') : '',
-                bcc: item.bcc ? item.bcc.map(r => r.emailAddress).join(', ') : ''
-            },
-            receivedDateTime: item.dateTimeCreated ? new Date(item.dateTimeCreated).toISOString() : '',
-            categories: item.categories ? item.categories.join(', ') : '',
-            importance: item.importance || '',
-            hasAttachments: item.hasAttachments || false,
-            attachments: item.attachments ? item.attachments.map(att => att.name).join(', ') : '',
-            conversationId: item.conversationId || '',
-            internetMessageId: item.internetMessageId || '',
-            body: ''
-        };
-
-        // Get the email body
         return new Promise((resolve, reject) => {
+            // Get the email body
             item.body.getAsync(Office.CoercionType.Text, (result) => {
                 if (result.status === Office.AsyncResultStatus.Succeeded) {
-                    emailInfo.body = result.value;
+                    const emailInfo = {
+                        subject: item.subject || '',
+                        sender: item.from ? item.from.emailAddress : '',
+                        recipients: {
+                            to: item.to ? item.to.map(r => r.emailAddress).join(', ') : '',
+                            cc: item.cc ? item.cc.map(r => r.emailAddress).join(', ') : '',
+                            bcc: item.bcc ? item.bcc.map(r => r.emailAddress).join(', ') : ''
+                        },
+                        receivedDateTime: item.dateTimeCreated ? new Date(item.dateTimeCreated).toISOString() : '',
+                        categories: item.categories ? item.categories.join(', ') : '',
+                        importance: item.importance || '',
+                        hasAttachments: item.hasAttachments || false,
+                        attachments: item.attachments ? item.attachments.map(att => att.name).join(', ') : '',
+                        conversationId: item.conversationId || '',
+                        internetMessageId: item.internetMessageId || '',
+                        body: result.value
+                    };
                     resolve(emailInfo);
                 } else {
-                    reject(new Error(result.error.message));
+                    reject(new Error('Failed to get email body: ' + result.error.message));
                 }
             });
         });
@@ -71,6 +69,8 @@ Office.onReady(() => {
     // Add click event handler
     sendButton.addEventListener('click', async () => {
         try {
+            showStatus('Loading email content...');
+            
             // Get the current email item
             const item = Office.context.mailbox.item;
             
@@ -79,6 +79,8 @@ Office.onReady(() => {
             
             // Display the formatted JSON
             displayJSON(emailContent);
+            
+            showStatus('Sending to API...');
             
             // API endpoint and configuration
             const apiEndpoint = 'https://prodaus.api.airia.ai/v1/PipelineExecution/bc8e5a90-c46b-41a3-a0f6-72364ebf7a8f';
