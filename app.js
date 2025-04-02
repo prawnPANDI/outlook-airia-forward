@@ -120,7 +120,7 @@ Office.onReady(() => {
             addLogEntry('Step 6: Preparing API request...');
             
             // API endpoint and configuration
-            const apiEndpoint = 'https://prodaus.api.airia.ai/v1/PipelineExecution/bc8e5a90-c46b-41a3-a0f6-72364ebf7a8f';
+            const apiEndpoint = 'https://prodaus.api.airia.ai/v1/PipelineExecution/bc8e5a90-c46b-41a3-a0f6-72364ebf7a8f/';
             const requestData = {
                 userId: "019540ef-47e9-7b57-a89b-2c521617064f",
                 userInput: JSON.stringify(emailContent, null, 2)
