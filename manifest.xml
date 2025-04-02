@@ -25,7 +25,7 @@
         <Form xsi:type="ItemRead">
             <DesktopSettings>
                 <SourceLocation DefaultValue="https://prawnPANDI.github.io/outlook-airia-forward/index.html"/>
-                <DisableEntityHighlighting>false</DisableEntityHighlighting>
+                <RequestedHeight>250</RequestedHeight>
             </DesktopSettings>
         </Form>
     </FormSettings>
