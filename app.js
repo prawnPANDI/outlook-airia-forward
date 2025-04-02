@@ -15,6 +15,20 @@ Office.onReady(() => {
             // Get the email body
             item.body.getAsync(Office.CoercionType.Text, (result) => {
                 if (result.status === Office.AsyncResultStatus.Succeeded) {
+                    // Log the categories property to understand its structure
+                    console.log('Categories property:', item.categories);
+                    
+                    let categoriesValue = '';
+                    if (item.categories) {
+                        if (Array.isArray(item.categories)) {
+                            categoriesValue = item.categories.join(', ');
+                        } else if (typeof item.categories === 'string') {
+                            categoriesValue = item.categories;
+                        } else {
+                            categoriesValue = String(item.categories);
+                        }
+                    }
+
                     const emailInfo = {
                         subject: item.subject || '',
                         sender: item.from ? item.from.emailAddress : '',
@@ -24,7 +38,7 @@ Office.onReady(() => {
                             bcc: item.bcc ? item.bcc.map(r => r.emailAddress).join(', ') : ''
                         },
                         receivedDateTime: item.dateTimeCreated ? new Date(item.dateTimeCreated).toISOString() : '',
-                        categories: Array.isArray(item.categories) ? item.categories.join(', ') : (item.categories || ''),
+                        categories: categoriesValue,
                         importance: item.importance || '',
                         hasAttachments: item.hasAttachments || false,
                         attachments: item.attachments ? item.attachments.map(att => att.name).join(', ') : '',
