@@ -24,7 +24,7 @@ Office.onReady(() => {
                             bcc: item.bcc ? item.bcc.map(r => r.emailAddress).join(', ') : ''
                         },
                         receivedDateTime: item.dateTimeCreated ? new Date(item.dateTimeCreated).toISOString() : '',
-                        categories: item.categories ? item.categories.join(', ') : '',
+                        categories: Array.isArray(item.categories) ? item.categories.join(', ') : (item.categories || ''),
                         importance: item.importance || '',
                         hasAttachments: item.hasAttachments || false,
                         attachments: item.attachments ? item.attachments.map(att => att.name).join(', ') : '',
