@@ -34,8 +34,8 @@ Office.onReady(() => {
                         mode: 'cors',
                         credentials: 'omit',
                         body: JSON.stringify({
-                            userInput: emailContent,
-                            asyncOutput: false
+                            userId: "019540ef-47e9-7b57-a89b-2c521617064f",
+                            userInput: emailContent
                         })
                     })
                     .then(response => {
