@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp
+    xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+    xsi:type="MailApp">
+    <Id>12345678-1234-1234-1234-123456789012</Id>
+    <Version>1.0.0.0</Version>
+    <ProviderName>Your Name</ProviderName>
+    <DefaultLocale>en-US</DefaultLocale>
+    <DisplayName DefaultValue="Email Content Sender" />
+    <Description DefaultValue="An add-in that sends email content to an API endpoint"/>
+    <IconUrl DefaultValue="https://www.contoso.com/assets/icon-32.png"/>
+    <HighResolutionIconUrl DefaultValue="https://www.contoso.com/assets/hi-res-icon.png"/>
+    <SupportUrl DefaultValue="https://www.contoso.com/help"/>
+    <Hosts>
+        <Host Name="Mailbox"/>
+    </Hosts>
+    <Requirements>
+        <Sets>
+            <Set Name="Mailbox" MinVersion="1.1"/>
+        </Sets>
+    </Requirements>
+    <FormSettings>
+        <Form xsi:type="ItemRead">
+            <DesktopSettings>
+                <SourceLocation DefaultValue="https://localhost:3000/index.html"/>
+                <RequestedHeight>250</RequestedHeight>
+                <RequestedWidth>350</RequestedWidth>
+            </DesktopSettings>
+        </Form>
+    </FormSettings>
+    <Permissions>ReadWriteMailbox</Permissions>
+    <Rule xsi:type="RuleCollection" Mode="Or">
+        <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
+    </Rule>
+</OfficeApp> 
