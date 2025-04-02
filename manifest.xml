@@ -24,7 +24,7 @@
     <FormSettings>
         <Form xsi:type="ItemRead">
             <DesktopSettings>
-                <SourceLocation DefaultValue="https://localhost:3000/index.html"/>
+                <SourceLocation DefaultValue="https://prawnPANDI.github.io/outlook-airia-forward/index.html"/>
                 <RequestedHeight>250</RequestedHeight>
                 <RequestedWidth>350</RequestedWidth>
             </DesktopSettings>
