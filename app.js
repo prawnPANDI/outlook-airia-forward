@@ -28,18 +28,28 @@ Office.onReady(() => {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-API-KEY': 'ak-NjQ3NzIxNjk0fDE3NDM1ODE0Nzc2MzV8QWlyaWF8MXw2ODMwOTY0MTMg'
+                            'X-API-KEY': 'ak-NjQ3NzIxNjk0fDE3NDM1ODE0Nzc2MzV8QWlyaWF8MXw2ODMwOTY0MTMg',
+                            'Accept': 'application/json'
                         },
+                        mode: 'cors',
+                        credentials: 'omit',
                         body: JSON.stringify({
                             userInput: emailContent,
                             asyncOutput: false
                         })
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         showStatus('Email content sent successfully!');
+                        console.log('API Response:', data);
                     })
                     .catch(error => {
+                        console.error('Error details:', error);
                         showStatus('Error sending email content: ' + error.message);
                     });
                 } else {
@@ -47,6 +57,7 @@ Office.onReady(() => {
                 }
             });
         } catch (error) {
+            console.error('Error details:', error);
             showStatus('Error: ' + error.message);
         }
     });
